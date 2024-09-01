@@ -108,14 +108,112 @@ export const Pane: FC = () => {
     }
   };
 
+  //   const saveLayout = async () => {
+  //     console.log('Hit!!!!');
+  //     const {name, vendorProductId} = selectedDefinition;
+  //     const suggestedName =
+  //       name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '.layout.json';
+  //     try {
+  //       const handle = await window.showSaveFilePicker({
+  //         suggestedName,
+  //       });
+  //       const encoderValues = await getEncoderValues();
+  //       const saveFile: ViaSaveFile = {
+  //         name,
+  //         vendorProductId,
+  //         macros: [...expressions],
+  //         layers: rawLayers.map(
+  //           (layer: {keymap: number[]}) =>
+  //             layer.keymap.map(
+  //               (keyByte: number) =>
+  //                 getCodeForByte(keyByte, basicKeyToByte, byteToKey) || '',
+  //             ), // TODO: should empty string be empty keycode instead?
+  //         ),
+  //         encoders: encoderValues,
+  //       };
+
+  //       const content = stringify(saveFile);
+  //       const blob = new Blob([content], {type: 'application/json'});
+  //       const writable = await handle.createWritable();
+  //       await writable.write(blob);
+  //       await writable.close();
+  //     } catch (err) {
+  //       console.log('User cancelled save file request', err);
+  //     }
+
+  //     /*
+  //     const url = URL.createObjectURL(blob);
+
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.download = defaultFilename;
+
+  //     link.click();
+  //     URL.revokeObjectURL(url);
+  // */
+  //   };
+
+  // const saveLayout = async () => {
+  //   const suggestedName =
+  //     name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '.layout.json';
+  //   try {
+  //     let handle;
+  //     if (window.showSaveFilePicker) {
+  //       handle = await window.showSaveFilePicker({
+  //         suggestedName,
+  //       });
+  //     } else {
+  //       // Fallback method
+  //       const url = URL.createObjectURL(
+  //         new Blob([content], {type: 'application/json'}),
+  //       );
+  //       const link = document.createElement('a');
+  //       link.href = url;
+  //       link.download = suggestedName;
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //       URL.revokeObjectURL(url);
+  //       return;
+  //     }
+
+  //     const encoderValues = await getEncoderValues();
+  //     const saveFile: ViaSaveFile = {
+  //       name,
+  //       vendorProductId,
+  //       macros: [...expressions],
+  //       layers: rawLayers.map(
+  //         (layer: {keymap: number[]}) =>
+  //           layer.keymap.map(
+  //             (keyByte: number) =>
+  //               getCodeForByte(keyByte, basicKeyToByte, byteToKey) || '',
+  //           ), // TODO: should empty string be empty keycode instead?
+  //       ),
+  //       encoders: encoderValues,
+  //     };
+
+  //     const content = stringify(saveFile);
+  //     const blob = new Blob([content], {type: 'application/json'});
+  //     const writable = await handle.createWritable();
+  //     await writable.write(blob);
+  //     await writable.close();
+  //   } catch (err) {
+  //     console.log('User cancelled save file request', err);
+  //   }
+  // };
+
   const saveLayout = async () => {
     const {name, vendorProductId} = selectedDefinition;
     const suggestedName =
       name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '.layout.json';
     try {
-      const handle = await window.showSaveFilePicker({
-        suggestedName,
-      });
+      let handle;
+      if (window.showSaveFilePicker) {
+        handle = await window.showSaveFilePicker({
+          suggestedName,
+        });
+      }
+
       const encoderValues = await getEncoderValues();
       const saveFile: ViaSaveFile = {
         name,
@@ -133,23 +231,25 @@ export const Pane: FC = () => {
 
       const content = stringify(saveFile);
       const blob = new Blob([content], {type: 'application/json'});
-      const writable = await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
+
+      if (handle) {
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } else {
+        // Fallback method
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = suggestedName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
     } catch (err) {
-      console.log('User cancelled save file request');
+      console.log('User cancelled save file request', err);
     }
-
-    /*
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = defaultFilename;
-
-    link.click();
-    URL.revokeObjectURL(url);
-*/
   };
 
   const loadLayout = ([file]: Blob[]) => {
