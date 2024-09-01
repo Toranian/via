@@ -1,11 +1,15 @@
+# My Changes
 
+For some reason Via has stopped exporting the layout file for my keyboard, so I modified it to just bypass the error it was having and export the file which works perfectly.
 
 # usevia.app
+
 [![Azure Static Web Apps CI/CD](https://github.com/the-via/app/actions/workflows/azure.yml/badge.svg)](https://github.com/the-via/app/actions/workflows/azure.yml)
 
 ![android-chrome-192x192](https://user-images.githubusercontent.com/1714072/222621960-ddfb8ee6-a486-4c66-8852-b204ba7c807b.png)
 
 ## Useful commands
+
 ### `npm run start`
 
 Runs the app in the development mode.
@@ -18,7 +22,6 @@ You will also see any lint errors in the console.
 
 Builds a static copy of your site to the `build/` folder.
 Your app is ready to be deployed!
-
 
 ### `npm run test`
 
